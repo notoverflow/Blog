@@ -15,31 +15,82 @@
     <div class="leftcolumn">
 
         <div class="card">
-            <div class="nouveau">
-                <p>Nouveau message</p>
-            </div><br>
-            <div class="fakeimg">Image</div><br>
-            <div class="fakeimg">Image</div>
+            <div class="fakeimg">
+                <a href="index.php?page=nouveau"> Nouveau message</a>
+
+            </div>
+            <br>
+
+            <div class="fakeimg">
+                <a href="index.php?page=Présentation"> Présentation</a>
+            </div>
+            <br>
+            <div class="fakeimg">
+                <a href="index.php?page=Message"> Blog</a></div>
+
+            <br>
+
+            <div class="fakeimg">
+                <a href="index.php?page=rechercher"> rechercher</a></div>
         </div>
 
 
     </div>
     <div class="center">
 
-        <div class="card">
-            <h2>TITLE HEADING</h2>
-            <h5>Title description, Dec 7, 2017</h5>
-            <div class="fakeimg" style="height:200px;">Image</div>
-            <p>Some text..</p>
-            <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
-        </div>
-        <div class="card">
-            <h2>TITLE HEADING</h2>
-            <h5>Title description, Sep 2, 2017</h5>
-            <div class="fakeimg" style="height:200px;">Image</div>
-            <p>Some text..</p>
-            <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
-        </div>
+        <?php
+
+        if ($_GET['page'] == 'Message') { ?>
+
+
+            <div id="message">
+
+                <div class="card">
+                    <h2>TITLE HEADING</h2>
+                    <h5>Title description, Dec 7, 2017</h5>
+                    <p>Some text..</p>
+                    <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit,
+                        sed do
+                        eiusmod
+                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                        exercitation
+                        ullamco.</p>
+                </div>
+                <div class="card">
+                    <h2>TITLE HEADING</h2>
+                    <h5>Title description, Sep 2, 2017</h5>
+                    <p>Some text..</p>
+                    <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit,
+                        sed do
+                        eiusmod
+                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                        exercitation
+                        ullamco.</p>
+                </div>
+            </div>
+            <?php
+        } else if ($_GET['page'] == 'nouveau') {
+
+        } else if ($_GET['page'] == 'rechercher') {
+
+        } else {
+
+            ?>
+
+            <div class="card">
+
+                <h3 style="text-align: center">Blog de L1</h3>
+                <p>ceci un un projet universitaire, qui consiste à faire un mini blog, voici ma version :) </p>
+
+
+            </div>
+
+            <?php
+
+        }
+        ?>
+
+
     </div>
 </div>
 
