@@ -43,32 +43,63 @@
         if ($_GET['page'] == 'Message') { ?>
 
 
-            <div id="message">
 
-                <div class="card">
-                    <h2>TITLE HEADING</h2>
-                    <h5>Title description, Dec 7, 2017</h5>
-                    <p>Some text..</p>
-                    <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit,
-                        sed do
-                        eiusmod
-                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                        exercitation
-                        ullamco.</p>
-                </div>
-                <div class="card">
-                    <h2>TITLE HEADING</h2>
-                    <h5>Title description, Sep 2, 2017</h5>
-                    <p>Some text..</p>
-                    <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit,
-                        sed do
-                        eiusmod
-                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                        exercitation
-                        ullamco.</p>
-                </div>
-            </div>
+
+
+            <!---->
+<!--            <div id="message">-->
+<!---->
+<!--                <div class="card">-->
+<!--                    <h2>TITLE HEADING</h2>-->
+<!--                    <h5>Title description, Dec 7, 2017</h5>-->
+<!--                    <p>Some text..</p>-->
+<!--                    <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit,-->
+<!--                        sed do-->
+<!--                        eiusmod-->
+<!--                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud-->
+<!--                        exercitation-->
+<!--                        ullamco.</p>-->
+<!--                </div>-->
+<!--                <div class="card">-->
+<!--                    <h2>TITLE HEADING</h2>-->
+<!--                    <h5>Title description, Sep 2, 2017</h5>-->
+<!--                    <p>Some text..</p>-->
+<!--                    <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit,-->
+<!--                        sed do-->
+<!--                        eiusmod-->
+<!--                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud-->
+<!--                        exercitation-->
+<!--                        ullamco.</p>-->
+<!--                </div>-->
+<!--            </div>-->
             <?php
+            $file = fopen("messages.txt","r");
+            
+            while(!feof($file))
+            {
+                $donnees= fgets($file);
+                list($theme,$message,$image,$auteur) = explode("|", $donnees);
+                $jour = date("d-m-Y");
+                $heure = date("H:i");
+                echo"
+			<div class='w3-container'>
+			<article>
+			<header>
+			<h1> $theme </h1>
+			</header>
+							
+			<div class='w3-container w3-card-4'>
+			       <p> $message </p>
+			</div>
+			<footer >
+			      <p class='w3-right'> Auteur: $auteur  Publié le $jour à $heure 
+			</footer>
+			</article>
+			</div>";
+
+            }
+
+
         } else if ($_GET['page'] == 'nouveau') {
 
         } else if ($_GET['page'] == 'rechercher') {
