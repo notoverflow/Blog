@@ -64,6 +64,10 @@
             $P = false;
         }
 
+        if ($_GET['page'] == 'suprimmer') {
+//            todo suprimmer le message
+            $P = true;
+        }
 
         if ($_GET['page'] == 'Message' or $P) {
 
@@ -83,7 +87,7 @@
             if (isset($_GET['n']) && !empty($_GET['n'])) {
                 $currentPage = (int)strip_tags($_GET['n']);
             } else {
-                $currentPage = 1;
+                $currentPage = $nbrpage;
             }
             $premier = ($currentPage * $nbparpage) - $nbparpage + 1;
             $dernier = $premier + $nbparpage - 1;
@@ -101,7 +105,8 @@
                 $auteur = $messages[$i][4];
                 $jour = date("d-m-Y");
                 $heure = date("H:i");
-
+//todo changer position id
+                $id = 1;
                 echo "
 			<div class='w3-container'>
 			<article>
@@ -113,7 +118,14 @@
 			<h3>$titre</h3>
 			       <p> $message </p>
 			       <img src='$image' style='weight:50px;height:50px'/>
-			       <p class='w3-right'> Auteur: $auteur  Publié le $jour à $heure 
+			       <p class='w3-right'> Auteur: $auteur  Publié le $jour à $heure </p>
+			       <br>
+			       
+			       			      <a href='index.php?page=suprimmer&id=";echo $id; echo "' > <button class='button button3' >Suprimmer </button></a>
+
+			       <br>
+			       
+			       
 			</div>
 		
 			      
@@ -135,7 +147,7 @@
 
                 <?php for ($page = 1; $page <= $nbrpage; $page++): ?>
                     <a <?php if ($page == $currentPage) echo 'class="active"' ?>
-                    href="index.php?page=Message&n=<?= $page ?> >"> <?= $page ?></a>
+                            href="index.php?page=Message&n=<?= $page ?> >"> <?= $page ?></a>
                 <?php endfor ?>
 
                 <a <?php if ($currentPage == $nbrpage) echo 'style="display:none"' ?>
