@@ -39,33 +39,69 @@
     </div>
     <div class="center">
 
+
         <?php
 
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 //            on ajoute dans le message.txt
+            echo "POST : ";
+            echo $_POST['ok'];
+            echo "\n";
+            if ($_POST['ok'] == "OK") {
+                $file = fopen("messages.txt", "r");
+                while (!feof($file))
+                    $messages[] = explode('|', trim(fgets($file)));
+                fclose($file);
+                $id = intval($messages[count($messages) - 1][0]) + 1;
+                $titre = $_POST["Titre"];
+                $contenu = str_replace("\r\n", "<br>", $_POST['commentaire']);
+                $theme = $_POST['Theme'];
+                $image = $_POST['image'];
+                $auteur = $_POST['pseudo'];
+                $motscle = $_POST['motscle'];
+//            todo rajouter l'images dans le formulaire
 
+                $date = date("d/m/Y") . " à " . date("H:i");
+                $fp = fopen("messages.txt", "a");
+                $savestring = "\n" . $id . "|" . $titre . "|" . $theme . "|" . $contenu . "|" . $image . "|" . $auteur . "|" . $motscle . "|" . $date;
+                fwrite($fp, $savestring);
+                fclose($fp);
 
-            $titre = $_POST["Titre"];
-            $contenu = $_POST['commentaire'];
-            $theme = $_POST['Theme'];
-            $image = $_POST['image'];
-            $auteur = $_POST['pseudo'];
-//            todo rajouter l'images dans le formulaire et les mots clé
-            $contenu = str_replace("\r\n", "<br>", $_POST['commentaire']);
-            $fp = fopen("messages.txt", "a");
-            $savestring = "\n" . $titre . "|" . $theme . "|" . $contenu . "|" . $image . "|" . $auteur;
-            fwrite($fp, $savestring);
-            fclose($fp);
+                $theme = "";
+                $motscle = "";
+
+            } else if ($_POST['ok'] == "Chercher") {
+                $theme = $_POST['theme'];
+                $motscle = $_POST['motscle'];
+
+            }
             $P = true;
 
         } else {
             $P = false;
         }
 
-        if ($_GET['page'] == 'suprimmer') {
-//            todo suprimmer le message
+        if ($_GET['page'] == 'supprimer') {
+
+//lectures des messages et mise en place dans un tableau
+            $file = fopen("messages.txt", "r");
+            $id = $_GET['id'];
+            while (!feof($file))
+                $messages[] = explode('|', trim(fgets($file)));
+            fclose($file);
+
+            $file = fopen("messages.txt", "w");
+            for ($i = 1; $i < count($messages); $i++) {
+                if ($messages[$i][0] != $id) {
+                    fwrite($file, "\n" . $messages[$i][0] . "|" . $messages[$i][1] . "|" . $messages[$i][2] . "|" . $messages[$i][3] . "|" . $messages[$i][4] . "|" . $messages[$i][5] . "|" . $messages[$i][6] . "|" . $messages[$i][7] . "|" . $messages[$i][8]);
+
+                }
+
+            }
+            fclose($file);
+
             $P = true;
         }
 
@@ -95,22 +131,18 @@
                 $dernier = $nbrligne;
             }
 
-
             for ($i = $premier; $i <= $dernier; $i++) {
-//                list($titre, $theme, $message, $image, $auteur) = explode("|", $donnees);
-                $titre = $messages[$i][0];
-                $theme = $messages[$i][1];
-                $message = $messages[$i][2];
-                $images = $messages[$i][3];
-                $auteur = $messages[$i][4];
-                $jour = date("d-m-Y");
-                $heure = date("H:i");
-//todo changer position id
-                $id = 1;
+//                list($id, $titre, $theme, $message , $image, $auteur) = explode("|", $donnees);
+                $id = $messages[$i][0];
+                $titre = $messages[$i][1];
+                $theme = $messages[$i][2];
+                $message = $messages[$i][3];
+                $images = $messages[$i][4];
+                $auteur = $messages[$i][5];
+                $date = $messages[$i][7];
+                $modifier = $messages[$i][8];
 
 
-
-                
                 echo "
 			<div class='w3-container'>
 			<article>
@@ -121,11 +153,22 @@
 			<div class='w3-container w3-card-4'>
 			<h3>$titre</h3>
 			       <p> $message </p>
-			       <img src='$image' style='weight:50px;height:50px'/>
-			       <p class='w3-right'> Auteur: $auteur  Publié le $jour à $heure </p>
+			       <img src='$images' style='weight:50px;height:50px'/>
+			       <p class='w3-right'> Auteur: $auteur  Publié le $date </p>
+			       ";
+                if ($modifier != "") {
+                    echo "<p> modifier le $modifier </p>";
+                }
+                echo "
+        
 			       <br>
 			       
-			       			      <a href='index.php?page=suprimmer&id=";echo $id; echo "' > <button class='button button3' >Suprimmer </button></a>
+			       			      <a href='index.php?page=supprimer&id=";
+                echo $id;
+                echo "' > <button class='button button3' >Supprimer </button></a>
+			       			      <a href='index.php?page=modifier&id=";
+                echo $id;
+                echo "' > <button class='button button2' >Modifier  </button></a>
 
 			       <br>
 			       
@@ -163,8 +206,9 @@
 
 
             <?php
-
-        } else if ($_GET['page'] == 'nouveau') {
+//todo rajouter images
+        } //        ajout de message
+        else if ($_GET['page'] == 'nouveau') {
 
 
             ?>
@@ -212,6 +256,13 @@
                         <input type="text" name="pseudo" id="pseudo" class="w3-input"
                                value="<?php if (isset($_POST['pseudo'])) echo $_POST['pseudo']; else echo '' ?>"
                     </p>
+
+                    <p>
+                        <label for="motscle" class="w3-text-teal">Mots clé : </label>
+                        <input type="text" name="motscle" id="motscle" class="w3-input"
+                               value="<?php if (isset($_POST['motscle'])) echo $_POST['motscle']; else echo '' ?>"/>
+
+                    </p>
                     <p>
                         <label for="commentaire" class="w3-text-teal">commentaire</label>
                         <textarea name="commentaire" id="commentaire" class="w3-input" rows="5" cols="33"
@@ -234,12 +285,55 @@
             <?php
 
 
-            //    todo ici on mets messages d'erreur/ commentaire ajouter
+        } //        recherche
+        else if ($_GET['page'] == 'rechercher') {
+
+            ?>
 
 
-        } else if ($_GET['page'] == 'rechercher') {
+            <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST" class="w3-container" id="recherche">
 
-        } else {
+                <p>
+
+                    <label for="Theme" class="w3-text-teal">Theme</label>
+                    <select name="Theme" id="Theme" class="w3-select">
+                        <option value="tous" <?php if ((isset($POST['Theme']) && $_POST['Theme'] == '')) echo 'selected'; ?> >
+                            tous
+                        </option>
+                        <option value="Informatique" <?php if ((isset($POST['Theme']) && $_POST['Theme'] == '')) echo 'selected'; ?> >
+                            Informatique
+                        </option>
+
+                        <option value="Musique" <?php if ((isset($POST['Theme']) && $_POST['Theme'] == '')) echo 'selected'; ?> >
+                            Musique
+                        </option>
+                        <option value="Cuisine" <?php if ((isset($POST['Theme']) && $_POST['Theme'] == '')) echo 'selected'; ?> >
+                            Cuisine
+                        </option>
+
+                    </select>
+                </p>
+                <p>
+                    <label for="motscle" class="w3-text-teal">Mots clé : </label>
+                    <input type="text" name="motscle" id="motscle" class="w3-input"
+                           value="<?php if (isset($_POST['motscle'])) echo $_POST['motscle']; else echo '' ?>"/>
+
+                </p>
+
+                <p>
+                    <input type="submit" value="Chercher" name="ok">
+
+                </p>
+
+
+            </form>
+
+
+            <?php
+
+
+        } else //        affichage par default
+        {
 
             ?>
 
